@@ -19,11 +19,10 @@ const uploadsPath = path.join(__dirname, "../uploads");
 
 // ================= MIDDLEWARE =================
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Serve frontend
+// ================= STATIC FILES =================
 app.use(express.static(publicPath));
-
-// Serve uploads
 app.use("/uploads", express.static(uploadsPath));
 
 // ================= HOME ROUTE =================
@@ -45,6 +44,7 @@ const upload = multer({ storage });
 
 // ================= UPLOAD API =================
 app.post("/upload", upload.single("file"), (req, res) => {
+
     if (!req.file) {
         return res.status(400).json({ error: "No file selected" });
     }
@@ -58,6 +58,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
 
 // ================= SOCKET.IO =================
 io.on("connection", (socket) => {
+
     console.log("User connected:", socket.id);
 
     socket.on("message", (data) => {
@@ -75,6 +76,7 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
     });
+
 });
 
 // ================= START SERVER =================
